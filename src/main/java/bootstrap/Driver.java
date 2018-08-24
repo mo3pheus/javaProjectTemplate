@@ -1,11 +1,10 @@
 package bootstrap;
 
-import org.apache.log4j.EnhancedPatternLayout;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
+import etl.SoundMetaData;
+import org.apache.log4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.FileUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,15 +15,29 @@ public class Driver {
             "==============================================================";
 
     public static Properties projectProperties = new Properties();
-    public static Logger     logger            = LoggerFactory.getLogger(Driver.class);
+    public static Logger logger = LoggerFactory.getLogger(Driver.class);
 
     public static void main(String[] args) {
         try {
-            String logFilePath = configureLogging(Boolean.parseBoolean(args[0]));
+            String logFilePath = "";
+            configureConsoleLogging(Boolean.parseBoolean(args[0]));
             logger.info(SEPARATOR);
-            System.out.println(" Project properties are loaded. Log file generated for this run = " + logFilePath);
+            logger.info(" Project properties are loaded. Log file generated for this run = " + logFilePath);
             projectProperties = getProjectProperties(args[1]);
+
+            SoundMetaData soundMetaData = new SoundMetaData();
+            soundMetaData.initializeLabelledData(projectProperties.getProperty("audio.resources.path"));
+            soundMetaData.getManuallyVerifiedFiles(projectProperties.getProperty("audio.resources.train.metaFile"));
+
             logger.info(SEPARATOR);
+            for (String uniqueClass : soundMetaData.getManuallyVerifiedClasses()) {
+                logger.info(uniqueClass);
+            }
+            logger.info("Total number of manually verified classes = " + soundMetaData.getManuallyVerifiedClasses().size());
+            logger.info(SEPARATOR);
+
+            FileUtil.writeCompDataToDisk(soundMetaData.getClassCompositionGrndTruth(),projectProperties.getProperty("audio.resources.class.compositionFile"));
+
         } catch (IOException io) {
             logger.error("Error while reading the project properties file.", io);
         }
@@ -48,10 +61,22 @@ public class Driver {
         return fa.getFile();
     }
 
+    public static void configureConsoleLogging(boolean debug) {
+        ConsoleAppender ca = new ConsoleAppender();
+        if (!debug) {
+            ca.setThreshold(Level.toLevel(Priority.INFO_INT));
+        } else {
+            ca.setThreshold(Level.toLevel(Priority.DEBUG_INT));
+        }
+        ca.setLayout(new EnhancedPatternLayout("%-6d [%25.35t] %-5p %40.80c - %m%n"));
+        ca.activateOptions();
+        org.apache.log4j.Logger.getRootLogger().addAppender(ca);
+    }
+
     public static Properties getProjectProperties(String propertiesFilePath) throws IOException {
         logger.info("Properties file specified at location = " + propertiesFilePath);
-        FileInputStream projFile   = new FileInputStream(propertiesFilePath);
-        Properties      properties = new Properties();
+        FileInputStream projFile = new FileInputStream(propertiesFilePath);
+        Properties properties = new Properties();
         properties.load(projFile);
         return properties;
     }
