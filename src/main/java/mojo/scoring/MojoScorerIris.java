@@ -8,20 +8,20 @@ import ai.h2o.mojos.runtime.frame.MojoRowBuilder;
 
 public class MojoScorerIris {
 
-    public static final String MOJO_PATH = "/home/sanket/Documents/workspace/javaProjectTemplate/src/main/resources/h2o/pipeline.mojo";
+    public static final String MOJO_PATH = "src/main/resources/h2o/pipeline.mojo";
 
     public static void main(String[] args) throws Exception {
         // Load model and csv
         MojoPipeline model = MojoPipeline.loadFrom(MOJO_PATH);
 
         // Get and fill the input columns
-        //4.9,3,1.4,0.2,setosa
+        //5.5,2.4,3.7,1.0,versicolor
         MojoFrameBuilder frameBuilder = model.getInputFrameBuilder();
         MojoRowBuilder   rowBuilder   = frameBuilder.getMojoRowBuilder();
-        rowBuilder.setValue("sepal_length", "4.9");
-        rowBuilder.setValue("sepal_width", "3.0");
-        rowBuilder.setValue("petal_length", "1.4");
-        rowBuilder.setValue("petal_width", "0.2");
+        rowBuilder.setValue("sepal_length", "5.5");
+        rowBuilder.setValue("sepal_width", "2.4");
+        rowBuilder.setValue("petal_length", "3.7");
+        rowBuilder.setValue("petal_width", "1.0");
 
         frameBuilder.addRow(rowBuilder);
 
