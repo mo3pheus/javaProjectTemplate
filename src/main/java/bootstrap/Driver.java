@@ -1,5 +1,6 @@
 package bootstrap;
 
+import domain.Student;
 import org.apache.log4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,15 @@ public class Driver {
             logger.info(SEPARATOR);
             logger.info("Project properties are loaded. Log file generated for this run = " + logFilePath);
             projectProperties = getProjectProperties(args[1]);
+
+            System.out.println(projectProperties.getProperty("project.name"));
+
+            histogram histogram = new histogram();
+            histogram.utility();
+            histogram.printHistogram();
+
+
+
         } catch (IOException io) {
             logger.error("Error while reading the project properties file.", io);
         }
