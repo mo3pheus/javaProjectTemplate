@@ -1,9 +1,5 @@
 package bootstrap;
 
-import java.io.IOException;
-import java.util.List;
-import java.nio.file.*;
-
 public class posDetail {
     String headerRowKey;
     String txType;
@@ -68,9 +64,4 @@ public class posDetail {
     public void setServerTime(String serverTime) {
         this.serverTime = serverTime;
     }
-
-
-
-
-
 }

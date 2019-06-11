@@ -1,6 +1,5 @@
 package bootstrap;
 
-import domain.Student;
 import org.apache.log4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +25,16 @@ public class Driver {
 
             System.out.println(projectProperties.getProperty("project.name"));
 
+            // Histogram ->
+            // CashierHistogram cashierHistogram = new CashierHistogram();
             histogram histogram = new histogram();
             histogram.utility();
             histogram.printHistogram();
 
 
-
         } catch (IOException io) {
-            logger.error("Error while reading the project properties file.", io);
+            // Incorrect error message -
+            logger.error("IOException", io);
         }
     }
 

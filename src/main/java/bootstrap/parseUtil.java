@@ -7,12 +7,14 @@ import org.slf4j.LoggerFactory;
 public class parseUtil {
     public static posDetail parsePosDetailsRow(String line) throws IllegalArgumentException {
         String[] rowCols = line.split(",");
-        Logger logger = LoggerFactory.getLogger(parseUtil.class);
-        if (rowCols.length < 19) {
+        Logger   logger  = LoggerFactory.getLogger(parseUtil.class);
+
+        if ( rowCols.length < 19 ) {
             throw new IllegalArgumentException("Invalid row passed, cannot parse. " + line);
         }
+
         posDetail posDetail = new posDetail();
-        try{
+        try {
             posDetail.setCashier(rowCols[3]);
             //logger.info(posDetail.getCashier());
             posDetail.setHeaderRowKey(rowCols[4]);
@@ -26,15 +28,11 @@ public class parseUtil {
             posDetail.setTxType(rowCols[17]);
             posDetail.setValueNum(Double.parseDouble(rowCols[18]));
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
 
         }
-
-
         return posDetail;
     }
-
 
 
 }
