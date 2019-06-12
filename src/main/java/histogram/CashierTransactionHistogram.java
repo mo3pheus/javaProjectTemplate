@@ -1,6 +1,6 @@
 package histogram;
 
-import utility.UtilityHelper;
+import utility.ParsingUtility;
 import domain.POSDetail;
 
 import org.slf4j.Logger;
@@ -36,16 +36,29 @@ public class CashierTransactionHistogram {
 
     public CashierTransactionHistogram(String inputFile){
         this.inputFile = inputFile;
+        try {
+            this.generateHistogram();
+        } catch (IOException e) {
+            logger.info(""+e);
+        }
+    }
+
+    public Map<String, Map<String, Double>> getCashierHourOfDayHistogram() {
+        return cashierHourOfDayHistogram;
+    }
+
+    public void setCashierHourOfDayHistogram(Map<String, Map<String, Double>> cashierHourOfDayHistogram) {
+        this.cashierHourOfDayHistogram = cashierHourOfDayHistogram;
     }
 
     // poor function name - names for variables and functions/ classes should express what they are doing.
-    public void generateHistogram() throws IOException{
+    private void generateHistogram() throws IOException{
         // hard coded input path - can not run the program with different path
 
         List<String> lines     = Files.readAllLines(Paths.get(inputFile));
 
         for (String line : lines) {
-            POSDetail posDetail = UtilityHelper.parsePosDetailsRow(line);
+            POSDetail posDetail = ParsingUtility.parsePosDetailsRow(line);
 
             if(checkForNullAttributes(posDetail))
                 continue;
@@ -54,7 +67,7 @@ public class CashierTransactionHistogram {
         }
     }
 
-    public boolean checkForNullAttributes(POSDetail posDetail){
+    private boolean checkForNullAttributes(POSDetail posDetail){
         if(posDetail.getRegisterTime()==null) {
             logger.info("Register time: "+posDetail.getRegisterTime());
             return true;
@@ -69,7 +82,7 @@ public class CashierTransactionHistogram {
         return false;
     }
 
-    public void addToCashierHistogram(POSDetail posDetail) {
+    private void addToCashierHistogram(POSDetail posDetail) {
         String cashierKey         = generateCashierKey(posDetail);
         String transactionTypeKey = generateTransactionTypeKey(posDetail);
         if ( cashierHourOfDayHistogram.containsKey(cashierKey) ) {
@@ -91,15 +104,15 @@ public class CashierTransactionHistogram {
     }
 
     public String generateCashierKey(POSDetail posDetail) {
-        return UtilityHelper.getTransactionHourOfDay(posDetail) + "_" + posDetail.getCashier();
+        return ParsingUtility.getTransactionHourOfDay(posDetail) + "_" + posDetail.getCashier();
     }
 
     public String generateTransactionTypeKey(POSDetail posDetail) {
-        return UtilityHelper.getTransactionHourOfDay(posDetail) + "_" + posDetail.getTxType();
+        return ParsingUtility.getTransactionHourOfDay(posDetail) + "_" + posDetail.getTxType();
     }
 
 
-    public void printHistogram() throws IOException {
+    public void printHistogram(Map<String, Map<String, Double>> cashierTransactionHistogram) throws IOException {
         // fixed path - so code is not flexible.
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 

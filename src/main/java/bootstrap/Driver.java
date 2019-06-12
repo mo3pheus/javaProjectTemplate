@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 
 public class Driver {
@@ -37,12 +38,12 @@ public class Driver {
 
 
         CashierTransactionHistogram histogram = new CashierTransactionHistogram(inputFile);
+        Map<String, Map<String,Double>> cashierTransactionHistogram = histogram.getCashierHourOfDayHistogram();
 
         try {
-            histogram.generateHistogram();
-            histogram.printHistogram();
-        } catch (Exception e) {
-            logger.info(e.getMessage());
+            histogram.printHistogram(cashierTransactionHistogram);
+        } catch (IOException e) {
+            logger.info("stdout error: "+e);
         }
     }
 

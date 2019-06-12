@@ -8,9 +8,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UtilityHelper {
+public class ParsingUtility {
     public static final String REG_TIME_PATTERN = "MM/dd/yy HH:mm";
-    public static Logger   logger  = LoggerFactory.getLogger(UtilityHelper.class);
+    public static Logger   logger  = LoggerFactory.getLogger(ParsingUtility.class);
 
     public static POSDetail parsePosDetailsRow(String line) throws IllegalArgumentException {
         String[] rowCols = line.split(",");
