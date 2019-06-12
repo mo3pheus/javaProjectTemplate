@@ -1,16 +1,19 @@
-package bootstrap;
+package histogram;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import utility.UtilityHelper;
+import domain.POSDetail;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,35 +28,48 @@ import java.util.Map;
 
 
 // Not a strong object oriented design. Need to think about what data this class takes and what functions/ services it exposes and offers
-public class histogram {
-
-    public static final String REG_TIME_PATTERN = "MM/dd/yy HH:mm";
-    Logger                           logger                    = LoggerFactory.getLogger(histogram.class);
+public class CashierTransactionHistogram {
+    Logger                           logger                    = LoggerFactory.getLogger(CashierTransactionHistogram.class);
     Map<String, Map<String, Double>> cashierHourOfDayHistogram = new HashMap<>();
 
+    private String inputFile;
+
+    public CashierTransactionHistogram(String inputFile){
+        this.inputFile = inputFile;
+    }
+
     // poor function name - names for variables and functions/ classes should express what they are doing.
-    public void utility() throws IOException {
-        // hard coded input path - can not run the program with different paths
-        String       inputPath = "/Users/aap1018/Documents/workspace/minorityReportCopy/minorityreport/trendsDataDao/java/transactionCompare/src/main/resources/posDetails_03_2016.csv";
-        List<String> lines     = Files.readAllLines(Paths.get(inputPath));
+    public void generateHistogram() throws IOException{
+        // hard coded input path - can not run the program with different path
+
+        List<String> lines     = Files.readAllLines(Paths.get(inputFile));
 
         for (String line : lines) {
-            if ( line == lines.get(0) )
-                // do not write code assuming fixed structure of input file.
+            POSDetail posDetail = UtilityHelper.parsePosDetailsRow(line);
 
+            if(checkForNullAttributes(posDetail))
                 continue;
-            posDetail posDetail = parseUtil.parsePosDetailsRow(line);
-            //logger.info("I got "+posDetail.getRegisterTime());
-            //assert (posDetail.getRegisterTime()!=null) : "Null here";
-            if ( posDetail.getRegisterTime() == null ) {
-                continue;
-            }
+
             addToCashierHistogram(posDetail);
         }
     }
 
+    public boolean checkForNullAttributes(POSDetail posDetail){
+        if(posDetail.getRegisterTime()==null) {
+            logger.info("Register time: "+posDetail.getRegisterTime());
+            return true;
+        }
+        if(posDetail.getTxType()==null){
+            logger.info("Transaction Type: "+posDetail.getTxType());
+            return true;
+        }
+        if(posDetail.getCashier()==null){
+            logger.info("Cashier Id: "+posDetail.getCashier());
+        }
+        return false;
+    }
 
-    public void addToCashierHistogram(posDetail posDetail) {
+    public void addToCashierHistogram(POSDetail posDetail) {
         String cashierKey         = generateCashierKey(posDetail);
         String transactionTypeKey = generateTransactionTypeKey(posDetail);
         if ( cashierHourOfDayHistogram.containsKey(cashierKey) ) {
@@ -74,37 +90,21 @@ public class histogram {
 
     }
 
-    public int getTransactionHourOfDay(posDetail posDetail) {
-        DateTime dateTime = getTransactionDateTime(posDetail);
-
-        return dateTime.getHourOfDay();
+    public String generateCashierKey(POSDetail posDetail) {
+        return UtilityHelper.getTransactionHourOfDay(posDetail) + "_" + posDetail.getCashier();
     }
 
-    public DateTime getTransactionDateTime(posDetail posDetail) {
-        String timeStamp = posDetail.getRegisterTime();
-        return getTransactionDateTime(timeStamp);
+    public String generateTransactionTypeKey(POSDetail posDetail) {
+        return UtilityHelper.getTransactionHourOfDay(posDetail) + "_" + posDetail.getTxType();
     }
 
-    public DateTime getTransactionDateTime(String timeStamp) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(REG_TIME_PATTERN);
-        //DateTime          dateTime          = dateTimeFormatter.parseDateTime(timeStamp).withZone(DateTimeZone.UTC);
-
-        DateTime dateTime = dateTimeFormatter.parseDateTime(timeStamp);
-        return dateTime;
-    }
-
-
-    public String generateCashierKey(posDetail posDetail) {
-        return getTransactionHourOfDay(posDetail) + "_" + posDetail.getCashier();
-    }
-
-    public String generateTransactionTypeKey(posDetail posDetail) {
-        return getTransactionHourOfDay(posDetail) + "_" + posDetail.getTxType();
-    }
 
     public void printHistogram() throws IOException {
         // fixed path - so code is not flexible.
-        FileWriter  filewriter  = new FileWriter("/Users/aap1018/Documents/workspace/javaProjectTemplate/src/main/java/bootstrap/hist.txt");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+
+        String outputPath = new File("./src/main/resources/outputHistograms/cashierHistogram_")+timeStamp+""+".txt";
+        FileWriter filewriter  = new FileWriter(outputPath);
         PrintWriter printWriter = new PrintWriter(filewriter);
         for (String key : cashierHourOfDayHistogram.keySet()) {
             Map<String, Double> map = cashierHourOfDayHistogram.get(key);
@@ -113,8 +113,9 @@ public class histogram {
                 printWriter.printf("    %f %s \n", map.get(txnKey), txnKey);
             }
         }
+
         printWriter.close();
-        System.out.println("Success");
+        logger.info("Success");
     }
 
 

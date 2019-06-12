@@ -1,6 +1,6 @@
-package bootstrap;
+package domain;
 
-public class posDetail {
+public class POSDetail {
     String headerRowKey;
     String txType;
     String cashier;

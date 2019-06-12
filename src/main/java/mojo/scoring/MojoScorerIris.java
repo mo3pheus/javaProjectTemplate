@@ -1,3 +1,4 @@
+
 package mojo.scoring;
 
 import ai.h2o.mojos.runtime.MojoPipeline;
