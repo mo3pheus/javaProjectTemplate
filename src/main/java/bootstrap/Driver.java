@@ -4,6 +4,7 @@ import histogram.CashierTransactionHistogram;
 import org.apache.log4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utility.ParsingUtility;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class Driver {
         Map<String, Map<String,Double>> cashierTransactionHistogram = histogram.getCashierHourOfDayHistogram();
 
         try {
-            histogram.printHistogram(cashierTransactionHistogram);
+            ParsingUtility.printHistogram(cashierTransactionHistogram);
         } catch (IOException e) {
             logger.info("stdout error: "+e);
         }

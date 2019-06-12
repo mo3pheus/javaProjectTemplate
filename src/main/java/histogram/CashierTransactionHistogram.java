@@ -30,7 +30,7 @@ import java.util.Map;
 // Not a strong object oriented design. Need to think about what data this class takes and what functions/ services it exposes and offers
 public class CashierTransactionHistogram {
     Logger                           logger                    = LoggerFactory.getLogger(CashierTransactionHistogram.class);
-    Map<String, Map<String, Double>> cashierHourOfDayHistogram = new HashMap<>();
+    private Map<String, Map<String, Double>> cashierHourOfDayHistogram = new HashMap<>();
 
     private String inputFile;
 
@@ -44,7 +44,7 @@ public class CashierTransactionHistogram {
     }
 
     public Map<String, Map<String, Double>> getCashierHourOfDayHistogram() {
-        return cashierHourOfDayHistogram;
+        return this.cashierHourOfDayHistogram;
     }
 
     public void setCashierHourOfDayHistogram(Map<String, Map<String, Double>> cashierHourOfDayHistogram) {
@@ -65,6 +65,8 @@ public class CashierTransactionHistogram {
 
             addToCashierHistogram(posDetail);
         }
+
+        this.setCashierHourOfDayHistogram(cashierHourOfDayHistogram);
     }
 
     private boolean checkForNullAttributes(POSDetail posDetail){
@@ -83,8 +85,8 @@ public class CashierTransactionHistogram {
     }
 
     private void addToCashierHistogram(POSDetail posDetail) {
-        String cashierKey         = generateCashierKey(posDetail);
-        String transactionTypeKey = generateTransactionTypeKey(posDetail);
+        String cashierKey         = ParsingUtility.generateCashierKey(posDetail);
+        String transactionTypeKey = ParsingUtility.generateTransactionTypeKey(posDetail);
         if ( cashierHourOfDayHistogram.containsKey(cashierKey) ) {
             Map<String, Double> transactionTypeHistogram = cashierHourOfDayHistogram.get(cashierKey);
             if ( transactionTypeHistogram.containsKey(transactionTypeKey) ) {
@@ -103,33 +105,7 @@ public class CashierTransactionHistogram {
 
     }
 
-    public String generateCashierKey(POSDetail posDetail) {
-        return ParsingUtility.getTransactionHourOfDay(posDetail) + "_" + posDetail.getCashier();
-    }
 
-    public String generateTransactionTypeKey(POSDetail posDetail) {
-        return ParsingUtility.getTransactionHourOfDay(posDetail) + "_" + posDetail.getTxType();
-    }
-
-
-    public void printHistogram(Map<String, Map<String, Double>> cashierTransactionHistogram) throws IOException {
-        // fixed path - so code is not flexible.
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-
-        String outputPath = new File("./src/main/resources/outputHistograms/cashierHistogram_")+timeStamp+""+".txt";
-        FileWriter filewriter  = new FileWriter(outputPath);
-        PrintWriter printWriter = new PrintWriter(filewriter);
-        for (String key : cashierHourOfDayHistogram.keySet()) {
-            Map<String, Double> map = cashierHourOfDayHistogram.get(key);
-            printWriter.println("Cashier Info: " + key);
-            for (String txnKey : map.keySet()) {
-                printWriter.printf("    %f %s \n", map.get(txnKey), txnKey);
-            }
-        }
-
-        printWriter.close();
-        logger.info("Success");
-    }
 
 
 }

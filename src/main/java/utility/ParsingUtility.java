@@ -8,6 +8,14 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Map;
+
 public class ParsingUtility {
     public static final String REG_TIME_PATTERN = "MM/dd/yy HH:mm";
     public static Logger   logger  = LoggerFactory.getLogger(ParsingUtility.class);
@@ -55,6 +63,34 @@ public class ParsingUtility {
 
         DateTime dateTime = dateTimeFormatter.parseDateTime(timeStamp);
         return dateTime;
+    }
+
+    public static String generateCashierKey(POSDetail posDetail) {
+        return ParsingUtility.getTransactionHourOfDay(posDetail) + "_" + posDetail.getCashier();
+    }
+
+    public static String generateTransactionTypeKey(POSDetail posDetail) {
+        return ParsingUtility.getTransactionHourOfDay(posDetail) + "_" + posDetail.getTxType();
+    }
+
+
+    public static void printHistogram(Map<String, Map<String, Double>> cashierTransactionHistogram) throws IOException {
+        // fixed path - so code is not flexible.
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+
+        String outputPath = new File("./src/main/resources/outputHistograms/cashierHistogram_")+timeStamp+""+".txt";
+        FileWriter filewriter  = new FileWriter(outputPath);
+        PrintWriter printWriter = new PrintWriter(filewriter);
+        for (String key : cashierTransactionHistogram.keySet()) {
+            Map<String, Double> map = cashierTransactionHistogram.get(key);
+            printWriter.println("Cashier Info: " + key);
+            for (String txnKey : map.keySet()) {
+                printWriter.printf("    %f %s \n", map.get(txnKey), txnKey);
+            }
+        }
+
+        printWriter.close();
+        logger.info("Success");
     }
 
 

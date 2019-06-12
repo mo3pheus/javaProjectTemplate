@@ -1,0 +1,6 @@
+Cashier Info: 3_5662593
+    1.000000 3_AgeVerifyDOB 
+Cashier Info: 2_5662593
+    1.000000 2_Entry 
+Cashier Info: 1_5662593
+    2.000000 1_SignInOut 
