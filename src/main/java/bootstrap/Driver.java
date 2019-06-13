@@ -22,8 +22,19 @@ public class Driver {
             logger.info(SEPARATOR);
             logger.info("Project properties are loaded. Log file generated for this run = " + logFilePath);
             projectProperties = getProjectProperties(args[1]);
+
+            System.out.println(projectProperties.getProperty("project.name"));
+
+            // Histogram ->
+            // CashierHistogram cashierHistogram = new CashierHistogram();
+            histogram histogram = new histogram();
+            histogram.utility();
+            histogram.printHistogram();
+
+
         } catch (IOException io) {
-            logger.error("Error while reading the project properties file.", io);
+            // Incorrect error message -
+            logger.error("IOException", io);
         }
     }
 
