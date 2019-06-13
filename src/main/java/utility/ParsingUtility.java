@@ -1,5 +1,4 @@
 package utility;
-import bootstrap.Driver;
 
 import domain.POSDetail;
 import org.joda.time.DateTime;
@@ -18,18 +17,18 @@ import java.util.Map;
 
 public class ParsingUtility {
     public static final String REG_TIME_PATTERN = "MM/dd/yy HH:mm";
-    public static Logger   logger  = LoggerFactory.getLogger(ParsingUtility.class);
+    public static Logger logger = LoggerFactory.getLogger(ParsingUtility.class);
 
     public static POSDetail parsePosDetailsRow(String line) throws IllegalArgumentException {
         String[] rowCols = line.split(",");
 
 
-        if ( rowCols.length < 19 ) {
+        if (rowCols.length < 19) {
             throw new IllegalArgumentException("Invalid row passed, cannot parse. " + line);
         }
 
         POSDetail posDetail = new POSDetail();
-        try{
+        try {
             posDetail.setCashier(rowCols[3]);
             posDetail.setHeaderRowKey(rowCols[4]);
             posDetail.setQuantity(Double.parseDouble(rowCols[10]));
@@ -37,9 +36,8 @@ public class ParsingUtility {
             posDetail.setServerTime(rowCols[15]);
             posDetail.setTxType(rowCols[17]);
             posDetail.setValueNum(Double.parseDouble(rowCols[18]));
-        }
-        catch(Exception e){
-            logger.info(""+e);
+        } catch (Exception e) {
+            logger.info("" + e);
         }
 
 
@@ -78,8 +76,8 @@ public class ParsingUtility {
         // fixed path - so code is not flexible.
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 
-        String outputPath = new File("./src/main/resources/outputHistograms/cashierHistogram_")+timeStamp+""+".txt";
-        FileWriter filewriter  = new FileWriter(outputPath);
+        String outputPath = new File("./src/main/resources/outputHistograms/cashierHistogram_") + timeStamp + "" + ".txt";
+        FileWriter filewriter = new FileWriter(outputPath);
         PrintWriter printWriter = new PrintWriter(filewriter);
         for (String key : cashierTransactionHistogram.keySet()) {
             Map<String, Double> map = cashierTransactionHistogram.get(key);
@@ -92,9 +90,6 @@ public class ParsingUtility {
         printWriter.close();
         logger.info("Success");
     }
-
-
-
 
 
 }

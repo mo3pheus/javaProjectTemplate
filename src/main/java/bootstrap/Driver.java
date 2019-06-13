@@ -39,12 +39,12 @@ public class Driver {
 
 
         CashierTransactionHistogram histogram = new CashierTransactionHistogram(inputFile);
-        Map<String, Map<String,Double>> cashierTransactionHistogram = histogram.getCashierHourOfDayHistogram();
+        Map<String, Map<String, Double>> cashierTransactionHistogram = histogram.getCashierHourOfDayHistogram();
 
         try {
             ParsingUtility.printHistogram(cashierTransactionHistogram);
         } catch (IOException e) {
-            logger.info("stdout error: "+e);
+            logger.info("stdout error: " + e);
         }
     }
 

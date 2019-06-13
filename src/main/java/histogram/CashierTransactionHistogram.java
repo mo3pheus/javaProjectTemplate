@@ -26,20 +26,19 @@ import java.util.Map;
 // Histogram customerHistogram; - tells me that customerHistogram is a variable
 
 
-
 // Not a strong object oriented design. Need to think about what data this class takes and what functions/ services it exposes and offers
 public class CashierTransactionHistogram {
-    Logger                           logger                    = LoggerFactory.getLogger(CashierTransactionHistogram.class);
+    Logger logger = LoggerFactory.getLogger(CashierTransactionHistogram.class);
     private Map<String, Map<String, Double>> cashierHourOfDayHistogram = new HashMap<>();
 
     private String inputFile;
 
-    public CashierTransactionHistogram(String inputFile){
+    public CashierTransactionHistogram(String inputFile) {
         this.inputFile = inputFile;
         try {
             this.generateHistogram();
         } catch (IOException e) {
-            logger.info(""+e);
+            logger.info("" + e);
         }
     }
 
@@ -52,15 +51,15 @@ public class CashierTransactionHistogram {
     }
 
     // poor function name - names for variables and functions/ classes should express what they are doing.
-    private void generateHistogram() throws IOException{
+    private void generateHistogram() throws IOException {
         // hard coded input path - can not run the program with different path
 
-        List<String> lines     = Files.readAllLines(Paths.get(inputFile));
+        List<String> lines = Files.readAllLines(Paths.get(inputFile));
 
         for (String line : lines) {
             POSDetail posDetail = ParsingUtility.parsePosDetailsRow(line);
 
-            if(checkForNullAttributes(posDetail))
+            if (checkForNullAttributes(posDetail))
                 continue;
 
             addToCashierHistogram(posDetail);
@@ -69,27 +68,27 @@ public class CashierTransactionHistogram {
         this.setCashierHourOfDayHistogram(cashierHourOfDayHistogram);
     }
 
-    private boolean checkForNullAttributes(POSDetail posDetail){
-        if(posDetail.getRegisterTime()==null) {
-            logger.info("Register time: "+posDetail.getRegisterTime());
+    private boolean checkForNullAttributes(POSDetail posDetail) {
+        if (posDetail.getRegisterTime() == null) {
+            logger.info("Register time: " + posDetail.getRegisterTime());
             return true;
         }
-        if(posDetail.getTxType()==null){
-            logger.info("Transaction Type: "+posDetail.getTxType());
+        if (posDetail.getTxType() == null) {
+            logger.info("Transaction Type: " + posDetail.getTxType());
             return true;
         }
-        if(posDetail.getCashier()==null){
-            logger.info("Cashier Id: "+posDetail.getCashier());
+        if (posDetail.getCashier() == null) {
+            logger.info("Cashier Id: " + posDetail.getCashier());
         }
         return false;
     }
 
     private void addToCashierHistogram(POSDetail posDetail) {
-        String cashierKey         = ParsingUtility.generateCashierKey(posDetail);
+        String cashierKey = ParsingUtility.generateCashierKey(posDetail);
         String transactionTypeKey = ParsingUtility.generateTransactionTypeKey(posDetail);
-        if ( cashierHourOfDayHistogram.containsKey(cashierKey) ) {
+        if (cashierHourOfDayHistogram.containsKey(cashierKey)) {
             Map<String, Double> transactionTypeHistogram = cashierHourOfDayHistogram.get(cashierKey);
-            if ( transactionTypeHistogram.containsKey(transactionTypeKey) ) {
+            if (transactionTypeHistogram.containsKey(transactionTypeKey)) {
                 double frequency = transactionTypeHistogram.get(transactionTypeKey);
                 transactionTypeHistogram.put(transactionTypeKey, frequency + 1.0);
 
@@ -104,8 +103,6 @@ public class CashierTransactionHistogram {
         }
 
     }
-
-
 
 
 }
