@@ -28,8 +28,7 @@ public class Driver {
 
             System.out.println(projectProperties.getProperty("project.name"));
 
-            // Histogram ->
-            // CashierHistogram cashierHistogram = new CashierHistogram();
+
         } catch (IOException io) {
             // Incorrect error message -
             logger.error("IOException", io);
@@ -38,8 +37,8 @@ public class Driver {
         String inputFile = args[2];
 
 
-        CashierTransactionHistogram histogram = new CashierTransactionHistogram(inputFile);
-        Map<String, Map<String, Double>> cashierTransactionHistogram = histogram.getCashierHourOfDayHistogram();
+        CashierTransactionHistogram cashierHistogram = new CashierTransactionHistogram(inputFile);
+        Map<String, Map<String, Double>> cashierTransactionHistogram = cashierHistogram.getCashierHourOfDayHistogram();
 
         try {
             ParsingUtility.printHistogram(cashierTransactionHistogram);

@@ -15,8 +15,8 @@ import static junit.framework.TestCase.assertTrue;
 
 
 public class CashierTransactionHistogramTest {
+    String inputFile = "./src/main/resources/input/txTest.csv";
 
-    String inputFile = "/Users/aap1018/Documents/workspace/javaProjectTemplate/src/main/resources/input/txTest.csv";
     static Logger logger = LoggerFactory.getLogger(CashierTransactionHistogramTest.class);
     Map<String, Map<String, Double>> actualHistogram = new HashMap<>();
     Map<String, Map<String, Double>> expectedHistogram = new HashMap<>();

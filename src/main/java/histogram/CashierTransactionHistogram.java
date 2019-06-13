@@ -18,15 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Class name - a) Start with a capital letter
-// b) variables start with a small letter - avoid numbers and underscores or special characters
-// c) variables are camelcase.
 
-// Histogram histogram = new Histogram(); - tells me that Histogram is a class
-// Histogram customerHistogram; - tells me that customerHistogram is a variable
-
-
-// Not a strong object oriented design. Need to think about what data this class takes and what functions/ services it exposes and offers
 public class CashierTransactionHistogram {
     Logger logger = LoggerFactory.getLogger(CashierTransactionHistogram.class);
     private Map<String, Map<String, Double>> cashierHourOfDayHistogram = new HashMap<>();
@@ -50,9 +42,8 @@ public class CashierTransactionHistogram {
         this.cashierHourOfDayHistogram = cashierHourOfDayHistogram;
     }
 
-    // poor function name - names for variables and functions/ classes should express what they are doing.
+
     private void generateHistogram() throws IOException {
-        // hard coded input path - can not run the program with different path
 
         List<String> lines = Files.readAllLines(Paths.get(inputFile));
 
