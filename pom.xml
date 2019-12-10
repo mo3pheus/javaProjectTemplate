@@ -4,21 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <junit.output.dir>output</junit.output.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
-    <groupId>sbd.digital.accelerator</groupId>
-    <artifactId>sound.ml</artifactId>
+    <groupId>curious.hungry.monkey</groupId>
+    <artifactId>baby.monitor</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -48,7 +46,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>mojo.scoring.MojoScorerIris</mainClass>
+                                    <mainClass>bootstrap.Driver</mainClass>
                                 </transformer>
                             </transformers>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
@@ -61,64 +59,12 @@
     </build>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>0.20.2</version>
+            <groupId>sbd.da.ai</groupId>
+            <artifactId>log.requiem</artifactId>
+            <version>1.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/ai.h2o/h2o-ext-mojo-pipeline -->
-        <dependency>
-            <groupId>ai.h2o</groupId>
-            <artifactId>h2o-ext-mojo-pipeline</artifactId>
-            <version>3.24.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ai.h2o</groupId>
-            <artifactId>mojo2-runtime-api</artifactId>
-            <version>3.24.0.3</version>
-            <scope>system</scope>
-            <systemPath>${main.basedir}/src/main/resources/h2o/mojo2-runtime.jar</systemPath>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 
