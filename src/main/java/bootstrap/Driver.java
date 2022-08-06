@@ -3,6 +3,7 @@ package bootstrap;
 import org.apache.log4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ArgumentParser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,6 +20,9 @@ public class Driver {
         try {
             configureConsoleLogging(false);
             logger.info("Hello World");
+
+            ArgumentParser argumentParser = new ArgumentParser(args);
+            argumentParser.printArgMap();
 
         } catch (Exception io) {
             // Incorrect error message -
