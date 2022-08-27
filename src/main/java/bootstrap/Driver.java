@@ -18,12 +18,15 @@ public class Driver {
 
     public static void main(String[] args) {
         try {
-            configureConsoleLogging(false);
-            logger.info("Hello World");
-
             ArgumentParser argumentParser = new ArgumentParser(args);
             argumentParser.printArgMap();
+            configureLogging(
+                    Boolean.parseBoolean(argumentParser.getArgMap().get("debug.logging")));
 
+            logger.info("Hello World");
+
+            int newsFrequencyHours = Integer.parseInt(argumentParser.getArgMap().get("news.frequency.hours"));
+            logger.info("News hour frequency = " + newsFrequencyHours);
         } catch (Exception io) {
             // Incorrect error message -
             logger.error("IOException", io);
@@ -32,21 +35,21 @@ public class Driver {
     }
 
     public static String configureLogging(boolean debug) {
-        FileAppender fa = new FileAppender();
+        FileAppender fileAppender = new FileAppender();
 
         if (!debug) {
-            fa.setThreshold(Level.toLevel(Priority.INFO_INT));
-            fa.setFile("executionLogs/log_infoLevel_report_" + Long.toString(System.currentTimeMillis()) + ".log");
+            fileAppender.setThreshold(Level.toLevel(Priority.INFO_INT));
+            fileAppender.setFile("executionLogs/log_infoLevel_report_" + Long.toString(System.currentTimeMillis()) + ".log");
         } else {
-            fa.setThreshold(Level.toLevel(Priority.DEBUG_INT));
-            fa.setFile("executionLogs/log_debugLevel_report_" + Long.toString(System.currentTimeMillis()) + ".log");
+            fileAppender.setThreshold(Level.toLevel(Priority.DEBUG_INT));
+            fileAppender.setFile("executionLogs/log_debugLevel_report_" + Long.toString(System.currentTimeMillis()) + ".log");
         }
 
-        fa.setLayout(new EnhancedPatternLayout("%-6d [%25.35t] %-5p %40.80c - %m%n"));
+        fileAppender.setLayout(new EnhancedPatternLayout("%-6d [%25.35t] %-5p %40.80c - %m%n"));
 
-        fa.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(fa);
-        return fa.getFile();
+        fileAppender.activateOptions();
+        org.apache.log4j.Logger.getRootLogger().addAppender(fileAppender);
+        return fileAppender.getFile();
     }
 
     public static void configureConsoleLogging(boolean debug) {
