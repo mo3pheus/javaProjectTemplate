@@ -31,6 +31,7 @@ public class Driver {
             // Incorrect error message -
             logger.error("IOException", io);
             io.printStackTrace();
+            ArgumentParser.printHelpMessage();
         }
     }
 

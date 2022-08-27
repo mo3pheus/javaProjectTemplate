@@ -12,6 +12,7 @@ public class ArgumentParser {
     public ArgumentParser(String[] args) {
         this.args = args;
         this.argMap = new HashMap<>();
+        showHelp();
         populateArgMap();
     }
 
@@ -19,6 +20,23 @@ public class ArgumentParser {
         for (String arg : args) {
             System.out.println(arg);
         }
+    }
+
+    public void showHelp(){
+        for(int i = 0; i < args.length; i++){
+            if(args[i].contains("--help")){
+                printHelpMessage();
+                System.exit(0);
+            }
+        }
+    }
+
+    public static void printHelpMessage(){
+        System.out.println(
+                " HELP MENU - \n" +
+                        "--debug.logging true/false (sets up logging information levels) \n"
+                        + "--news.frequency.hours ${numHours} (takes an integer for news frequency)"
+        );
     }
 
     private void populateArgMap() {
